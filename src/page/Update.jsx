@@ -1,14 +1,32 @@
-import React, { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
-import { Card } from "../components/Card";
-import Restaurants from "../components/Restaurants";
+import React, { useState, useEffect } from "react";
+import { useParams } from "react-router";
 
-export default function AddRestaurants() {
+const Update = () => {
+  //Get id From URL
+  const { id } = useParams();
   const [restaurant, setRestaurants] = useState({
     title: "",
     type: "",
     img: "",
   });
+
+  //2. Get Restaurant By Id
+  useEffect(() => {
+    fetch("http://localhost:3000/restaurants/" + id)
+      .then((res) => {
+        // convert to Json format
+        return res.json();
+      })
+      .then((response) => {
+        //save to state
+        setRestaurants(response);
+      })
+      .catch((err) => {
+        //catch error
+        console.log(err.message);
+      });
+  }, [id]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -16,12 +34,12 @@ export default function AddRestaurants() {
   };
   const handleSubmit = () => {
     try {
-      const response = fetch("http://localhost:3000/restaurants", {
-        method: "POST",
+      const response = fetch("http://localhost:3000/restaurants/" + id, {
+        method: "PUT",
         body: JSON.stringify(restaurant),
       });
       if (response.ok) {
-        alert("Restaurant Added successfully!!");
+        alert("Restaurant Updated successfully!!");
         setRestaurants({
           title: "",
           type: "",
@@ -42,6 +60,7 @@ export default function AddRestaurants() {
         <input
           type="text"
           name="title"
+          value={restaurant.title}
           placeholder="ชื่อชา"
           className="input input-bordered w-full max-w-xs"
           onChange={handleChange}
@@ -49,6 +68,7 @@ export default function AddRestaurants() {
         <input
           type="text"
           name="type"
+          value={restaurant.type}
           placeholder="ประเภท"
           className="input input-bordered w-full max-w-xs"
           onChange={handleChange}
@@ -57,6 +77,7 @@ export default function AddRestaurants() {
         <input
           type="text"
           name="img"
+          value={restaurant.img}
           placeholder="URL รูปภาพ"
           className="input input-bordered w-full max-w-xs"
           onChange={handleChange}
@@ -76,4 +97,6 @@ export default function AddRestaurants() {
       )}
     </div>
   );
-}
+};
+
+export default Update;

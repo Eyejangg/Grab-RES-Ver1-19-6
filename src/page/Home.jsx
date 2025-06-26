@@ -9,18 +9,37 @@ const Home = () => {
   /* restaurants คือค่าปัจจุบันของ state*/
   /* setRestaurants คือฟังก์ชันที่ใช้ในการอัปเดตค่า restaurants*/
   const [restaurants, setRestaurants] = useState([]);
+  const [keyword, setKeyword] = useState("");
+  const [fileterRestaurants, setfileterRestaurants] = useState([]);
+
+  const handleSearch = (keyword) => {
+    setKeyword(keyword); // บันทึก keyword ไว้ใน state ด้วย
+    if (keyword === "") {
+      setfileterRestaurants(restaurants);
+      return;
+    }
+
+    const result = restaurants.filter((restaurant) => {
+      return (
+        restaurant.title.toLowerCase().includes(keyword.toLowerCase()) ||
+        restaurant.type.toLowerCase().includes(keyword.toLowerCase())
+      );
+    });
+    setfileterRestaurants(result);
+  };
+
   // ทำงานครั้งเดียวตอนโหลด useEffect//
   useEffect(() => {
-    //call api: getAllRestaurants เรียำก api get all
+    //call api: getAllRestaurants เรียก api get all
     fetch("http://localhost:3000/restaurants")
       // convert to Json() แปรสภาพ
       .then((res) => {
         return res.json();
       })
-      // คือการรับ ข้อมูลที่ถูกแปลงเป็น JSON แล้ว จาก API แล้วนำข้อมูลนั้นไป อัปเดตค่า state
-      // ชื่อ restaurants ผ่านฟังก์ชัน setRestaurants
+      // คือการรับข้อมูลที่ถูกแปลงเป็น JSON แล้ว จาก API แล้วนำข้อมูลนั้นไปอัปเดตค่า state
       .then((response) => {
         setRestaurants(response);
+        setfileterRestaurants(response);
       })
       // จับ Error message
       .catch((err) => {
@@ -28,25 +47,21 @@ const Home = () => {
       });
   }, []);
 
-  {
-    /* ส่วนที่เรียน */
-  }
   return (
     <div className="container mx-auto">
-      <Navbar />
       <div className="flex justify-center">
         <h1 className="text-3xl text-center m-5 p-5">
           Grab Restaurant
-          <label class="input">
+          <label className="input">
             <svg
-              class="h-[1em] opacity-50"
+              className="h-[1em] opacity-50"
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
             >
               <g
-                stroke-linejoin="round"
-                stroke-linecap="round"
-                stroke-width="2.5"
+                strokeLinejoin="round"
+                strokeLinecap="round"
+                strokeWidth="2.5"
                 fill="none"
                 stroke="currentColor"
               >
@@ -55,7 +70,13 @@ const Home = () => {
               </g>
             </svg>
 
-            <input type="search" class="grow" placeholder="Search" />
+            <input
+              type="search"
+              name="keyword"
+              onChange={(e) => handleSearch(e.target.value)}
+              className="grow"
+              placeholder="Search"
+            />
           </label>
           {/* ส่วนที่เรียน */}
         </h1>
@@ -63,7 +84,7 @@ const Home = () => {
 
       {/* Result */}
       <div>
-        <Restaurants restaurants={restaurants} />
+        <Restaurants restaurants={fileterRestaurants} />
       </div>
     </div>
   );

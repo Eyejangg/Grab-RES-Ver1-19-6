@@ -1,12 +1,13 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import './index.css'
-import Home from './page/Home'
-import AddRestaurants from './page/AddRestaurants'
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
+import "./index.css";
+import router from "./routes/Router";
+import { RouterProvider } from "react-router";
+import Navbar from "./components/Navbar";
 
-
-createRoot(document.getElementById('root')).render(
+createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <AddRestaurants />
-  </StrictMode>,
-)
+    <Navbar />
+    <RouterProvider router={router} />
+  </StrictMode>
+);

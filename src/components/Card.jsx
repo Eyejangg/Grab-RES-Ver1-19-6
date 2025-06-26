@@ -3,6 +3,20 @@ import React from "react";
   /* ส่วนที่เรียน */
 }
 export const Card = (props) => {
+  const handleDelete = async (id) => {
+    try {
+      const response = fetch("http://localhost:3000/restaurants/" + id, {
+        method: "DELETE",
+      });
+      if (response.ok) {
+        alert("Restaurant Del successfully!!");
+        window.location.reload();
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <div className="card bg-base-100 w-96 shadow-sm">
       <figure>
@@ -15,9 +29,17 @@ export const Card = (props) => {
         </h2>
         <p>{props.type}</p>
         {/* ส่วนที่เรียน */}
+        {/* ส่วนที่เรียน */}
         <div className="card-actions justify-end">
-          <div className="badge badge-outline">Buy Now</div>
-          <div className="badge badge-outline">Delete</div>
+          <a href={"/update/" + props.id} className="btn btn-warning">
+            Update
+          </a>
+          <button
+            onClick={() => handleDelete(props.id)}
+            className="btn btn-error"
+          >
+            Delete
+          </button>
         </div>
       </div>
     </div>
